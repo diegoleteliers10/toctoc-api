@@ -1,5 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { User } from '../users/entities/users.entity';
+import { Property } from '../propoerties/entities/properties.entity';
 
 export const databaseConfig = (
   configService: ConfigService,
@@ -18,6 +20,9 @@ export const databaseConfig = (
     username: configService.get('DB_USERNAME'),
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_NAME'),
+
+    // 📦 Entidades registradas
+    entities: [User, Property],
 
     // 🔄 Sincronización automática (solo en desarrollo)
     synchronize: configService.get('NODE_ENV') !== 'production',
