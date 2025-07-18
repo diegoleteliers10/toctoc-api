@@ -8,7 +8,7 @@ import {
   Index,
   OneToMany,
 } from 'typeorm';
-import { Property } from '../../propoerties/entities/properties.entity';
+import { Property } from '../../properties/entities/properties.entity';
 
 @Entity('users')
 // 🔍 Índices compuestos para consultas frecuentes
@@ -44,6 +44,13 @@ export class User {
   password: string;
 
   @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  avatar?: string;
+
+  @Column({
     type: 'enum',
     enum: ['buyer', 'seller'],
     nullable: false,
@@ -64,6 +71,9 @@ export class User {
   })
   @Index('IDX_USERS_CREATED_AT') // 🔍 Para ordenar por fecha de registro
   createdAt: Date;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 
   @UpdateDateColumn({
     type: 'timestamp',
