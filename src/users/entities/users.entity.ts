@@ -62,7 +62,7 @@ export class User {
     type: 'timestamp',
     nullable: false,
   })
-  @Index('IDX_CREATED_AT') // 🔍 Para ordenar por fecha de registro
+  @Index('IDX_USERS_CREATED_AT') // 🔍 Para ordenar por fecha de registro
   createdAt: Date;
 
   @UpdateDateColumn({

@@ -118,7 +118,7 @@ export class Property {
     type: 'timestamp',
     nullable: false,
   })
-  @Index('IDX_CREATED_AT') // 🔍 Para ordenar por fecha de creación
+  @Index('IDX_PROPERTIES_CREATED_AT') // 🔍 Para ordenar por fecha de creación
   createdAt: Date;
 
   @UpdateDateColumn({
