@@ -1,15 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateUserDto, UserRole } from './create-user.dto';
-
-export class CreateUserWithFileDto extends CreateUserDto {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Avatar del usuario (imagen)',
-    required: false,
-  })
-  avatar?: any;
-}
+import { UserRole } from './create-user.dto';
 
 export class CreateUserFormDataDto {
   @ApiProperty({
