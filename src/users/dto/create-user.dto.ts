@@ -67,4 +67,12 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   role: UserRole;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Avatar del usuario (archivo de imagen opcional)',
+    required: false,
+  })
+  avatar?: any;
 }

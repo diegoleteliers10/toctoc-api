@@ -23,8 +23,6 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { CreateUserFormDataDto } from './dto/create-user-with-file.dto';
-import { UpdateUserFormDataDto } from './dto/update-user-with-file.dto';
 
 @ApiTags('users') //swagger api tag for users requests
 @Controller('users')
@@ -55,7 +53,7 @@ export class UsersController {
   @Patch(':id')
   @UseInterceptors(FileInterceptor('avatar'))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: UpdateUserFormDataDto })
+  @ApiBody({ type: UpdateUserDto })
   @ApiOperation({
     summary: 'Actualizar un usuario por su ID',
     description: 'Actualiza los datos de un usuario y opcionalmente su avatar',
@@ -85,7 +83,7 @@ export class UsersController {
   @Post()
   @UseInterceptors(FileInterceptor('avatar'))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateUserFormDataDto })
+  @ApiBody({ type: CreateUserDto })
   @ApiOperation({
     summary: 'Crear un nuevo usuario',
     description:

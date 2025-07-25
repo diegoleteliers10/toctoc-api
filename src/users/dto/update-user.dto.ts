@@ -1,5 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
@@ -8,11 +7,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   // Esto es perfecto para operaciones PATCH
 
   @ApiProperty({
-    description: 'URL del avatar del usuario (opcional)',
-    example: 'https://example.com/avatar.jpg',
+    type: 'string',
+    format: 'binary',
+    description: 'Avatar del usuario (archivo de imagen opcional)',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  avatar?: string;
+  avatar?: any;
 }
