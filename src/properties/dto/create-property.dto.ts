@@ -142,13 +142,14 @@ export class CreatePropertyDto {
 
   @ApiProperty({
     type: 'array',
-    items: { type: 'string' },
-    description: 'URLs de las imágenes de la propiedad',
+    items: {
+      type: 'string',
+      format: 'binary',
+      description: 'Imagen de la propiedad (archivo de imagen opcional)',
+    },
+    description:
+      'Lista de imágenes de la propiedad (archivos de imagen opcionales)',
     required: false,
-    example: [
-      'https://example.com/image1.jpg',
-      'https://example.com/image2.jpg',
-    ],
   })
   image_urls?: string[];
 

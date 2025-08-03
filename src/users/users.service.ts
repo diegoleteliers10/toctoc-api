@@ -94,7 +94,10 @@ export class UsersService {
     let avatarUrl: string | undefined = undefined;
     if (file) {
       this.validateFile(file);
-      avatarUrl = await this.uploadAvatarToSupabase(file, id);
+      avatarUrl = await this.uploadAvatarToSupabase(
+        file,
+        updateUserDto.email as string,
+      );
     }
 
     // Preparar datos de actualización
