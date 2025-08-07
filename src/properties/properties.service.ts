@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Property } from './entities/properties.entity';
 import type { Repository } from 'typeorm';
 import { createClient } from '@supabase/supabase-js';
 import type { PropertyResponseDto } from './dto/property-response.dto';
 import type { CreatePropertyDto } from './dto/create-property.dto';
+// import { View } from 'src/views/entities/view.entity';
 
 @Injectable()
 export class PropertiesService {
@@ -15,6 +20,8 @@ export class PropertiesService {
   constructor(
     @InjectRepository(Property)
     private readonly propertyRepository: Repository<Property>,
+    // @InjectRepository(View)
+    // private readonly viewRepository: Repository<View>,
   ) {}
 
   async getAllHouses(): Promise<PropertyResponseDto[]> {
@@ -22,8 +29,27 @@ export class PropertiesService {
       where: { isActive: true },
       order: { createdAt: 'DESC' },
     });
-    return properties.map((user: Property) => this.toPropertyResponse(user));
+    return properties.map((property: Property) =>
+      this.toPropertyResponse(property),
+    );
   }
+
+  // async getHouseById(id: string, userId: string): Promise<PropertyResponseDto> {
+  //   const property = await this.propertyRepository.findOne({
+  //     where: { isActive: true, id },
+  //   });
+  //   if (!property) {
+  //     throw new NotFoundException('La propiedad no existe en la base de datos');
+  //   }
+  //   if (userId) {
+  //     const view = this.viewRepository.create({
+  //       user_id: userId,
+  //       property_id: id,
+  //     });
+  //     await this.viewRepository.save(view);
+  //   }
+  //   return this.toPropertyResponse(property);
+  // }
 
   async createProperty(
     createPropertyDto: CreatePropertyDto,
