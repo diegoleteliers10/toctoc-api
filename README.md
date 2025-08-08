@@ -16,14 +16,21 @@ Una API RESTful desarrollada con NestJS para una plataforma de compra y arriendo
 #### 🏗️ Estructura del Proyecto
 ```
 src/
-├── config/              # Configuraciones de base de datos
-├── users/               # Módulo de usuarios
-│   └── entities/        # Entidades de usuarios
-├── propoerties/         # Módulo de propiedades
-│   └── entities/        # Entidades de propiedades
-├── app.module.ts        # Módulo principal
-├── main.ts             # Punto de entrada con Swagger
-└── app.controller.ts   # Controlador de bienvenida
+├── config/               # Configuración (DB, TypeORM)
+├── users/                # Módulo de usuarios (CRUD básico + upload avatar)
+│   ├── dto/              # DTOs y respuestas
+│   └── entities/         # Entidad User
+├── properties/           # Módulo de propiedades (crear + upload imágenes)
+│   ├── dto/              # DTOs y respuestas
+│   └── entities/         # Entidad Property
+├── likes/                # Módulo de likes (favoritos básicos)
+│   ├── dto/
+│   └── entities/         # Entidad Like
+├── views/                # Entidad View (conteo de vistas, sin endpoints aún)
+│   └── entities/
+├── app.module.ts         # Módulo principal
+├── main.ts               # Punto de entrada con Swagger
+└── app.controller.ts     # Controlador de bienvenida
 ```
 
 #### 👥 Sistema de Usuarios
@@ -55,6 +62,14 @@ src/
     - region + category + isActive  
     - price + type + city
 
+#### ❤️ Sistema de Likes (Favoritos)
+- **Entidad Like** con índices únicos para evitar duplicados por `user_id + property_id`.
+- Toggle de like/unlike vía endpoint dedicado.
+
+#### 👀 Sistema de Vistas
+- **Entidad View** preparada con índices para conteo y auditoría de visualizaciones por propiedad y usuario.
+- Aún sin endpoints públicos (planificado).
+
 ### ✅ Configuración Técnica
 
 #### 🔧 Base de Datos (Supabase)
@@ -79,6 +94,10 @@ src/
 - **CORS**: Habilitado para desarrollo (localhost:3000, localhost:3001)
 - **Variables de Entorno**: Soporte para `.env` y `.env.local`
 
+#### 🗄️ Storage (Supabase)
+- Subida de archivos a Supabase Storage para avatares de usuarios y fotos de propiedades.
+- Bucket utilizado: `files-bucket` (el servicio valida/crea buckets cuando corresponde).
+
 #### 🧪 Testing & Quality
 - **Jest**: Configurado para pruebas unitarias y E2E
 - **ESLint**: Reglas de TypeScript + Prettier
@@ -91,6 +110,36 @@ src/
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | GET    | `/api/v1/` | Mensaje de bienvenida de la API |
+
+### 👥 Usuarios (`/api/v1/users`)
+| Método | Endpoint | Descripción | Body |
+|--------|----------|-------------|------|
+| GET    | `/` | Listar usuarios activos | - |
+| GET    | `/test-storage` | Probar configuración de Supabase Storage | - |
+| GET    | `/:id` | Obtener usuario por ID | - |
+| GET    | `/me/:id` | Obtener mi usuario por ID | - |
+| POST   | `/` | Crear usuario (con avatar opcional) | `multipart/form-data` (campos de CreateUserDto + archivo `avatar`) |
+| PATCH  | `/:id` | Actualizar usuario (y avatar opcional) | `multipart/form-data` (campos de UpdateUserDto + archivo `avatar`) |
+| DELETE | `/:id` | Eliminación lógica del usuario | - |
+
+Campos relevantes DTO:
+- CreateUserDto: `name`, `email`, `password`, `role` (buyer|seller), `avatar` (binary opcional)
+- UpdateUserDto: todos opcionales + `avatar` (binary opcional)
+
+### 🏠 Propiedades (`/api/v1/properties`)
+| Método | Endpoint | Descripción | Body |
+|--------|----------|-------------|------|
+| POST   | `/` | Crear propiedad (con múltiples imágenes) | `multipart/form-data` (campos de CreatePropertyDto + archivos `image_urls[]`)
+
+Campos relevantes DTO (CreatePropertyDto):
+`title`, `description`, `price`, `currency` (CLP|UF), `address`, `city`, `region`, `category` (departamento|casa|comercial), `type` (arriendo|compra), `owner_id`, `image_urls[]` (urls o archivos).
+
+Nota: Endpoints de lectura/listado están en preparación; el servicio ya contempla `getAllHouses()` a nivel interno.
+
+### ❤️ Likes (`/api/v1/likes`)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST   | `/:propertyId?userId={uuid}` | Toggle like/unlike para una propiedad |
 
 ## 🛠️ Instalación y Configuración
 
@@ -119,6 +168,10 @@ DB_NAME=your-database-name
 # Application
 NODE_ENV=development
 PORT=3000
+
+# Supabase Storage
+SUPABASE_URL=your-supabase-project-url
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 ### 3. Ejecutar la aplicación
@@ -162,13 +215,13 @@ npm run test:cov
 ## 🏗️ Próximos Pasos
 
 ### 🔜 Funcionalidades Pendientes
-- [ ] Módulos completos de Users y Properties con CRUD
+- [ ] Módulos completos de Users y Properties con CRUD (Propiedades: lectura/listado pendientes)
 - [ ] Sistema de autenticación JWT
 - [ ] Filtros avanzados para búsqueda de propiedades
-- [ ] Sistema de favoritos
-- [ ] Upload de imágenes
+- [x] Sistema de favoritos (likes) básico
+- [x] Upload de imágenes (usuarios: avatar; propiedades: múltiples imágenes)
 - [ ] Paginación y ordenamiento
-- [ ] Validaciones con class-validator
+- [x] Validaciones con class-validator en DTOs
 - [ ] Rate limiting y seguridad
 
 ### 🎯 Optimizaciones Planeadas

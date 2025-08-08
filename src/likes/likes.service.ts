@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createClient } from '@supabase/supabase-js';
 import { Like } from './entities/like.entity';
@@ -21,6 +21,9 @@ export class LikesService {
     propertyId: string,
     userId: string,
   ): Promise<string | LikeResponseDto> {
+    if (userId === propertyId) {
+      throw new BadRequestException('No puedes likear tu propia propiedad');
+    }
     const like = await this.likeRepository.findOne({
       where: { property_id: propertyId, user_id: userId },
     });

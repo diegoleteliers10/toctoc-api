@@ -20,7 +20,8 @@ async function bootstrap() {
     .setDescription('API documentation for TocToc application')
     .setVersion('1.0')
     .addTag('users', 'User management endpoints')
-    .addTag('toctoc', 'TocToc API endpoints')
+    .addTag('properties', 'Property management endpoints')
+    .addTag('likes', 'Like management endpoints')
     .addServer('http://localhost:3000', 'Development server') //definimos el servidor de la api que usemos, como vemos abajo indicamos el de prod
     // .addServer('https://xxxxxx.com', 'Production server')
     .build();

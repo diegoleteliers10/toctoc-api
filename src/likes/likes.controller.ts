@@ -10,11 +10,11 @@ import {
   // ApiBody,
 } from '@nestjs/swagger';
 
+@ApiTags('likes')
 @Controller('likes')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
-  @ApiTags('likes')
   @ApiOperation({ summary: 'Like or unlike a property' })
   @ApiResponse({ status: 201, description: 'Like or unlike a property' })
   @ApiConsumes('application/json')

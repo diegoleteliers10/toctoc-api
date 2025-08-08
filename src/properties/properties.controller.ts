@@ -1,6 +1,6 @@
 import {
   Controller,
-  // Get,
+  Get,
   Body,
   // Param,
   // Patch,
@@ -10,6 +10,8 @@ import {
   Post,
   UseInterceptors,
   UploadedFiles,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
@@ -48,5 +50,13 @@ export class PropertiesController {
     }[],
   ) {
     return this.propertiesService.createProperty(createPropertyDto, files);
+  }
+
+  @Get(':id')
+  getHouseById(
+    @Param('id') propertyId: string,
+    @Query('userId') userId: string,
+  ) {
+    return this.propertiesService.getHouseById(propertyId, userId);
   }
 }
