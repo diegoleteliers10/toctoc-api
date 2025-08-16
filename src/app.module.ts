@@ -7,6 +7,7 @@ import { databaseConfig } from './config/database.config';
 import { UsersModule } from './users/users.module';
 import { PropertiesModule } from './properties/properties.module';
 import { LikesModule } from './likes/likes.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LikesModule } from './likes/likes.module';
     UsersModule,
     PropertiesModule,
     LikesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
