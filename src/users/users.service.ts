@@ -9,7 +9,6 @@ import { Repository } from 'typeorm';
 import { User } from './entities/users.entity';
 import type { UserResponseDto } from './dto/user-response.dto';
 import type { UpdateUserDto } from './dto/update-user.dto';
-import type { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { createClient } from '@supabase/supabase-js';
 
@@ -31,35 +30,6 @@ export class UsersService {
       order: { createdAt: 'DESC' },
     });
     return users.map((user: User) => this.toUserResponse(user));
-  }
-
-  async createUser(
-    createUser: CreateUserDto,
-    file?: {
-      buffer: Buffer;
-      mimetype: string;
-      originalname: string;
-      size: number;
-    },
-  ): Promise<UserResponseDto> {
-    await this.validateUserEmail(createUser.email);
-
-    const hashedPassword = await this.hashPassword(createUser.password);
-
-    // Procesar subida de avatar si existe
-    let avatarUrl: string | undefined = undefined;
-    if (file) {
-      this.validateFile(file);
-      avatarUrl = await this.uploadAvatarToSupabase(file, createUser.email);
-    }
-
-    const createdUser = await this.userRepository.save({
-      ...createUser,
-      password: hashedPassword,
-      avatar: avatarUrl,
-    }); // si no existe, guardamos el user en la bbdd
-
-    return this.toUserResponse(createdUser);
   }
 
   async findUserById(id: string): Promise<UserResponseDto> {

@@ -7,7 +7,6 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Post,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -22,7 +21,6 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiTags('users') //swagger api tag for users requests
 @Controller('users')
@@ -78,29 +76,6 @@ export class UsersController {
   @ApiOperation({ summary: 'Eliminar un usuario por su ID' })
   remove(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
-  }
-
-  @Post()
-  @UseInterceptors(FileInterceptor('avatar'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateUserDto })
-  @ApiOperation({
-    summary: 'Crear un nuevo usuario',
-    description:
-      'Crea un nuevo usuario con datos básicos y opcionalmente un avatar',
-  })
-  @ApiResponse({ status: HttpStatus.CREATED, type: UserResponseDto })
-  create(
-    @Body() createUserDto: CreateUserDto,
-    @UploadedFile()
-    file?: {
-      buffer: Buffer;
-      mimetype: string;
-      originalname: string;
-      size: number;
-    },
-  ) {
-    return this.usersService.createUser(createUserDto, file);
   }
 
   @Get('me/:id')

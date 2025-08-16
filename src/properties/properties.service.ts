@@ -33,6 +33,55 @@ export class PropertiesService {
     );
   }
 
+  async updateProperty(
+    id: string,
+    updatePropertyDto: Partial<CreatePropertyDto>,
+    files?: {
+      buffer: Buffer;
+      mimetype: string;
+      originalname: string;
+      size: number;
+    }[],
+  ): Promise<PropertyResponseDto> {
+    const property = await this.propertyRepository.findOne({
+      where: { id, isActive: true },
+    });
+
+    if (!property) {
+      throw new NotFoundException('La propiedad no existe en la base de datos');
+    }
+
+    // Procesar subida de imágenes si existen archivos
+    let imageUrls: string[] =
+      updatePropertyDto.image_urls || property.image_urls || [];
+
+    if (files && Array.isArray(files) && files.length > 0) {
+      // Subir cada imagen y obtener su URL pública
+      const uploadPromises = files.map(file =>
+        this.uploadPropertyImagesToSupabase(file, property.owner_id),
+      );
+      const uploadedUrls = await Promise.all(uploadPromises);
+      imageUrls = imageUrls.concat(uploadedUrls);
+    }
+
+    // Preparar datos de actualización
+    const updateData = { ...updatePropertyDto };
+    if (imageUrls.length > 0) {
+      updateData.image_urls = imageUrls;
+    }
+
+    await this.propertyRepository.update(id, updateData);
+    const updatedProperty = await this.propertyRepository.findOne({
+      where: { id, isActive: true },
+    });
+
+    if (!updatedProperty) {
+      throw new NotFoundException('Error al actualizar la propiedad');
+    }
+
+    return this.toPropertyResponse(updatedProperty);
+  }
+
   async getHouseById(id: string, userId: string): Promise<PropertyResponseDto> {
     const property = await this.propertyRepository.findOne({
       where: { isActive: true, id },

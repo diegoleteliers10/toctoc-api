@@ -22,6 +22,7 @@ async function bootstrap() {
     .addTag('users', 'User management endpoints')
     .addTag('properties', 'Property management endpoints')
     .addTag('likes', 'Like management endpoints')
+    .addTag('auth', 'Authentication endpoints')
     .addServer('http://localhost:3000', 'Development server') //definimos el servidor de la api que usemos, como vemos abajo indicamos el de prod
     // .addServer('https://xxxxxx.com', 'Production server')
     .build();

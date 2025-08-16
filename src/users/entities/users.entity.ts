@@ -52,11 +52,11 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: ['buyer', 'seller'],
+    enum: ['buyer', 'seller', 'admin'],
     nullable: false,
   })
   @Index('IDX_ROLE') // 🔍 Para filtrar por tipo de usuario
-  role: 'buyer' | 'seller';
+  role: 'buyer' | 'seller' | 'admin';
 
   // 🔗 Relación One-to-Many con Properties
   @OneToMany(() => Property, property => property.owner, {
